@@ -1,0 +1,82 @@
+{
+  "name": "archreviewagent",
+  "version": 1,
+  "runtimes": [
+    {
+      "type": "AgentCoreRuntime",
+      "name": "archreviewer",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "../src/",
+      "runtimeVersion": "PYTHON_3_13",
+      "instrumentation": {
+        "enableOtel": true
+      },
+      "envVars": [
+        {
+          "name": "AGENT_OBSERVABILITY_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "REVIEW_EXTRA_DELAY_SECONDS",
+          "value": "0"
+        },
+        {
+          "name": "OTEL_RESOURCE_ATTRIBUTES",
+          "value": "service.name=archreviewagent,service.namespace=architecture-review"
+        }
+      ],
+      "authorizerType": "CUSTOM_JWT",
+      "authorizerConfiguration": {
+        "customJwtAuthorizer": {
+          "discoveryUrl": "https://cognito-idp.us-east-1.amazonaws.com/YOUR_COGNITO_POOL_ID/.well-known/openid-configuration",
+          "allowedClients": [
+            "YOUR_COGNITO_CLIENT_ID"
+          ]
+        }
+      }
+    }
+  ],
+  "memories": [
+    {
+      "type": "AgentCoreMemory",
+      "name": "archreview_memory",
+      "eventExpiryDuration": 365,
+      "strategies": [
+        {
+          "type": "SEMANTIC",
+          "namespaces": [
+            "/rules/{actorId}/"
+          ]
+        }
+      ]
+    }
+  ],
+  "policyEngines": [
+    {
+      "name": "ArchreviewPolicyEngine",
+      "description": "Controls which MCP tools the architecture review agent can invoke through the Gateway",
+      "policies": [
+        {
+          "name": "AllowSearchDocs",
+          "description": "Allow the agent to call the AWS documentation search tool",
+          "statement": "permit(\n  principal,\n  action == AgentCore::Action::\"aws-docs___search_documentation\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:YOUR_ACCOUNT_ID:gateway/YOUR_GATEWAY_ID\"\n);",
+          "validationMode": "IGNORE_ALL_FINDINGS"
+        },
+        {
+          "name": "AllowReadDocs",
+          "description": "Allow the agent to call the AWS documentation read tool",
+          "statement": "permit(\n  principal,\n  action == AgentCore::Action::\"aws-docs___read_documentation\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:YOUR_ACCOUNT_ID:gateway/YOUR_GATEWAY_ID\"\n);",
+          "validationMode": "IGNORE_ALL_FINDINGS"
+        },
+        {
+          "name": "DenyInfraModify",
+          "description": "Forbid the agent from invoking the live infrastructure modification tool",
+          "statement": "forbid(\n  principal,\n  action == AgentCore::Action::\"infra-modifier___modify_infrastructure\",\n  resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:YOUR_ACCOUNT_ID:gateway/YOUR_GATEWAY_ID\"\n);",
+          "validationMode": "IGNORE_ALL_FINDINGS"
+        }
+      ]
+    }
+  ],
+  "credentials": []
+}

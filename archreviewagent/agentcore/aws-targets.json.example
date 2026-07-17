@@ -1,0 +1,7 @@
+[
+  {
+    "name": "default",
+    "region": "us-east-1",
+    "account": "YOUR_ACCOUNT_ID"
+  }
+]

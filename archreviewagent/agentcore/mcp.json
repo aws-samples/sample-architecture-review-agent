@@ -1,0 +1,109 @@
+{
+  "agentCoreGateways": [
+    {
+      "name": "archreview-gateway",
+      "description": "Gateway for architecture review agent to access external MCP tools",
+      "targets": [
+        {
+          "name": "aws-docs",
+          "targetType": "lambda",
+          "toolDefinitions": [
+            {
+              "name": "search_documentation",
+              "description": "Search AWS documentation for pages matching a search phrase. Returns URLs, titles, and context snippets.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "search_phrase": {
+                    "type": "string",
+                    "description": "Search phrase to find relevant AWS documentation"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of results (1-10, default 5)"
+                  }
+                },
+                "required": ["search_phrase"]
+              }
+            },
+            {
+              "name": "read_documentation",
+              "description": "Fetch and convert an AWS documentation page to markdown format. URL must be from docs.aws.amazon.com and end with .html.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "URL of the AWS documentation page to read"
+                  },
+                  "max_length": {
+                    "type": "integer",
+                    "description": "Maximum characters to return (default 5000)"
+                  }
+                },
+                "required": ["url"]
+              }
+            }
+          ],
+          "compute": {
+            "host": "Lambda",
+            "implementation": {
+              "language": "Python",
+              "path": "app/mcp/aws-docs",
+              "handler": "handler.lambda_handler"
+            },
+            "pythonVersion": "PYTHON_3_13",
+            "timeout": 30,
+            "memorySize": 256
+          }
+        },
+        {
+          "name": "infra-modifier",
+          "targetType": "lambda",
+          "toolDefinitions": [
+            {
+              "name": "modify_infrastructure",
+              "description": "Modify AWS infrastructure resources. WARNING: This tool makes changes to live infrastructure and should be restricted by policy.",
+              "inputSchema": {
+                "type": "object",
+                "properties": {
+                  "resource_id": {
+                    "type": "string",
+                    "description": "The AWS resource identifier to modify"
+                  },
+                  "action": {
+                    "type": "string",
+                    "description": "The modification action to perform (e.g., update_config, delete, scale)"
+                  },
+                  "parameters": {
+                    "type": "object",
+                    "description": "Action-specific parameters"
+                  }
+                },
+                "required": ["resource_id", "action"]
+              }
+            }
+          ],
+          "compute": {
+            "host": "Lambda",
+            "implementation": {
+              "language": "Python",
+              "path": "app/mcp/infra-modifier",
+              "handler": "handler.lambda_handler"
+            },
+            "pythonVersion": "PYTHON_3_13",
+            "timeout": 30,
+            "memorySize": 256
+          }
+        }
+      ],
+      "authorizerType": "AWS_IAM",
+      "enableSemanticSearch": true,
+      "exceptionLevel": "DEBUG",
+      "policyEngineConfiguration": {
+        "policyEngineName": "ArchreviewPolicyEngine",
+        "mode": "ENFORCE"
+      }
+    }
+  ]
+}

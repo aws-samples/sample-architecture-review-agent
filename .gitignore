@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# macOS
+.DS_Store
+
+# AgentCore CLI
+archreviewagent/agentcore/.cache/
+archreviewagent/agentcore/.cli/
+archreviewagent/agentcore/.llm-context/
+archreviewagent/agentcore/cdk/node_modules/
+archreviewagent/agentcore/cdk/dist/
+archreviewagent/agentcore/cdk/cdk.out/
+archreviewagent/agentcore/.env.local
+
+# AWS
+.aws-sam/
+
+# Kiro
+.kiro/settings/
+
+# Your AWS Account
+aws-targets.json
+
+# Deployment credentials (written by deploy.py)
+.env
+
+# Threadmodel
+.threatmodel/*

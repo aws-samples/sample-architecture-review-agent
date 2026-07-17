@@ -1,0 +1,7 @@
+[project]
+name = "aws-docs-mcp-tool"
+version = "1.0.0"
+description = "AWS Documentation search tool for AgentCore Gateway"
+requires-python = ">=3.13"
+
+dependencies = []

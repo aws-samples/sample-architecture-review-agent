@@ -1,0 +1,55 @@
+{
+  "description": "Sample organization rules for the Architecture Review Agent. These rules are added via the agent's add_org_rule tool and persisted in AgentCore Memory. This file serves as a reference for bulk-loading rules.",
+  "rules": [
+    {
+      "rule_text": "All Lambda functions must use arm64 architecture for cost optimization",
+      "severity": "critical",
+      "pillar": "cost_optimization"
+    },
+    {
+      "rule_text": "All S3 buckets must have lifecycle policies configured to transition objects to Glacier after 90 days",
+      "severity": "warning",
+      "pillar": "cost_optimization"
+    },
+    {
+      "rule_text": "All DynamoDB tables must use on-demand billing mode unless explicitly justified",
+      "severity": "warning",
+      "pillar": "cost_optimization"
+    },
+    {
+      "rule_text": "All Lambda functions must have a timeout of 30 seconds or less for API-facing workloads",
+      "severity": "warning",
+      "pillar": "performance_efficiency"
+    },
+    {
+      "rule_text": "All RDS instances must use Multi-AZ deployment in production",
+      "severity": "critical",
+      "pillar": "reliability"
+    },
+    {
+      "rule_text": "All SQS queues must have a dead letter queue configured with maxReceiveCount of 3",
+      "severity": "critical",
+      "pillar": "reliability"
+    },
+    {
+      "rule_text": "All resources must have a Name tag and an Environment tag",
+      "severity": "warning",
+      "pillar": "operational_excellence"
+    },
+    {
+      "rule_text": "All Lambda functions must use X-Ray tracing in Active mode",
+      "severity": "info",
+      "pillar": "operational_excellence"
+    },
+    {
+      "rule_text": "IAM roles must not use AWS managed policy AdministratorAccess",
+      "severity": "critical",
+      "pillar": "security"
+    },
+    {
+      "rule_text": "All API Gateway stages must have access logging enabled to CloudWatch",
+      "severity": "warning",
+      "pillar": "security"
+    }
+  ]
+}

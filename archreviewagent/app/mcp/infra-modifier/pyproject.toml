@@ -1,0 +1,7 @@
+[project]
+name = "infra-modifier-mcp-tool"
+version = "1.0.0"
+description = "Dummy infrastructure modification tool (blocked by policy)"
+requires-python = ">=3.13"
+
+dependencies = []
